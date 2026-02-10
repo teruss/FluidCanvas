@@ -1,9 +1,6 @@
 [gd_scene format=3 uid="uid://c5j6wh38icmrc"]
 
-[node name="FluidCanvasRoot" type="Control" unique_id=1261856539]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[ext_resource type="Script" uid="uid://bjj68xngx6tlb" path="res://src/fluid_canvas_root.gd" id="1_y3mfi"]
+
+[node name="FluidCanvasRoot" type="Node2D" unique_id=1165389291]
+script = ExtResource("1_y3mfi")
