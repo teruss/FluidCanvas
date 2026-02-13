@@ -119,6 +119,7 @@ jobs:
           path: build/mac
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: export-web
     runs-on: ubuntu-latest
     permissions:
