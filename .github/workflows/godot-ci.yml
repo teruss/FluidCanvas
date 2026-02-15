@@ -143,10 +143,13 @@ jobs:
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable \
              ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
+      - name: Import project (required before installing template)
+        run: |
+          godot --headless --path $PROJECT_PATH --quit
+
       - name: Install Android Build Template
         run: |
-          cd $PROJECT_PATH
-          godot --headless --install-android-build-template
+          godot --headless --path $PROJECT_PATH --install-android-build-template
 
       - name: Decode Android Keystore
         env:
