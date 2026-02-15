@@ -137,12 +137,6 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup Godot Templates
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable \
-             ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-
       - name: Decode Android Keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -150,27 +144,29 @@ jobs:
           mkdir -p keystore
           echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > keystore/release.keystore
           KEYSTORE_PATH="$PWD/keystore/release.keystore"
-          echo "ANDROID_KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
+          echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
 
-      - name: Android Build
+      - name: Gradle Build (Release)
         env:
-          ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
-          ANDROID_KEYSTORE_USER: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+          RELEASE_KEYSTORE: ${{ env.KEYSTORE_PATH }}
+          RELEASE_KEYSTORE_USER: ${{ secrets.ANDROID_KEY_ALIAS }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
         run: |
-          mkdir -p build/android
-          EXPORT_DIR="$PWD/build"
-          cd $PROJECT_PATH
+          cd $PROJECT_PATH/android/build
 
-          godot --headless --verbose \
-            --export-release "Android" "$EXPORT_DIR/android/$EXPORT_NAME.apk"
+          ./gradlew assembleRelease \
+            -Prelease_keystore="$RELEASE_KEYSTORE" \
+            -Prelease_keystore_user="$RELEASE_KEYSTORE_USER" \
+            -Prelease_keystore_password="$RELEASE_KEYSTORE_PASSWORD" \
+            -Prelease_key_password="$RELEASE_KEY_PASSWORD"
 
-      - name: Upload Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: android
-          path: build/android
+          name: android-apk
+          path: |
+            engine/android/build/app/outputs/apk/release/*.apk
 
   deploy:
     if: github.ref == 'refs/heads/main'
