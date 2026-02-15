@@ -125,6 +125,13 @@ jobs:
       image: barichello/godot-ci:4.6
 
     steps:
+      - name: Install JDK 17
+        run: |
+          apt-get update
+          apt-get install -y openjdk-17-jdk
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -145,7 +152,6 @@ jobs:
 
       - name: Android Build
         env:
-          # Godot が参照する環境変数名に合わせる
           ANDROID_KEYSTORE_PATH: keystore/release.keystore
           ANDROID_KEYSTORE_USER: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
