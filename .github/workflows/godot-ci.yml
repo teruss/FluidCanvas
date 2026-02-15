@@ -155,6 +155,9 @@ jobs:
         run: |
           cd $PROJECT_PATH/android/build
 
+          # ← これが必須
+          chmod +x gradlew
+
           ./gradlew assembleRelease \
             -Prelease_keystore="$RELEASE_KEYSTORE" \
             -Prelease_keystore_user="$RELEASE_KEYSTORE_USER" \
