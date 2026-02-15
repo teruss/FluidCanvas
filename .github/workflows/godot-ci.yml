@@ -118,36 +118,6 @@ jobs:
           name: mac
           path: build/mac
 
-  # -------------------------------
-  # 1. Android Template を生成するジョブ
-  # -------------------------------
-  generate-android-template:
-    name: Generate Android Template
-    runs-on: ubuntu-24.04
-    container:
-      image: ghcr.io/godotengine/godot:4.6-stable-headless
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Import project
-        run: |
-          godot --headless --path $PROJECT_PATH --quit
-
-      - name: Install Android Build Template
-        run: |
-          godot --headless --path $PROJECT_PATH --install-android-build-template
-
-      - name: Upload Android Template
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-template
-          path: $PROJECT_PATH/android
-
-  # -------------------------------
-  # 2. Android ビルドジョブ
-  # -------------------------------
   export-android:
     name: Android Export
     runs-on: ubuntu-24.04
@@ -172,12 +142,6 @@ jobs:
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable \
              ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-
-      - name: Download Android Template
-        uses: actions/download-artifact@v4
-        with:
-          name: android-template
-          path: $PROJECT_PATH/android
 
       - name: Decode Android Keystore
         env:
