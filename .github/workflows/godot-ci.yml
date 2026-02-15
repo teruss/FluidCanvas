@@ -125,7 +125,7 @@ jobs:
     name: Generate Android Template
     runs-on: ubuntu-24.04
     container:
-      image: ghcr.io/godotengine/godot:4.6-headless
+      image: ghcr.io/godotengine/godot:4.6-stable-headless
 
     steps:
       - name: Checkout
