@@ -149,7 +149,8 @@ jobs:
         run: |
           mkdir -p keystore
           echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > keystore/release.keystore
-          echo "ANDROID_KEYSTORE_PATH=$(readlink -f keystore/release.keystore)" >> $GITHUB_ENV
+          KEYSTORE_PATH="$PWD/keystore/release.keystore"
+          echo "ANDROID_KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
 
       - name: Android Build
         env:
@@ -158,8 +159,8 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
         run: |
-          mkdir -v -p build/android
-          EXPORT_DIR="$(readlink -f build)"
+          mkdir -p build/android
+          EXPORT_DIR="$PWD/build"
           cd $PROJECT_PATH
 
           godot --headless --verbose \
