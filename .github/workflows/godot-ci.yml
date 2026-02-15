@@ -160,7 +160,9 @@ jobs:
           mkdir -v -p build/android
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-
+          sed 's@keystore/release=".*"@keystore/release="'/root/release.keystore'"@g' -i export_presets.cfg
+          sed 's@keystore/release_user=".*"@keystore/release_user="'$ANDROID_KEYSTORE_USER'"@g' -i export_presets.cfg
+          sed 's@keystore/release_password=".*"@keystore/release_password="'$ANDROID_KEYSTORE_PASSWORD'"@g' -i export_presets.cfg
           godot --headless --verbose \
             --export-release "Android" "$EXPORT_DIR/android/$EXPORT_NAME.apk"
 
